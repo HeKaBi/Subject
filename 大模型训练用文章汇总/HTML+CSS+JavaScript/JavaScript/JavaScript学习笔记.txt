@@ -1,0 +1,1649 @@
+# JavaScript核心与进阶课程课程安排
+
+- 基础
+	- day01：let / const 变量、数据类型、ES6模板字符串
+	- day02：运算符、分支、循环
+	- day03：数组
+	- day04：函数
+	- day05：对象、内置对象
+- 应用
+	- day01：DOM获取&属性操作
+	- day02：事件核心
+	- day03：事件进阶
+	- day04：DOM操作&移动端滑动
+	- day05：正则&阶段案例
+	- day06：京东实战、放大镜、电梯导航
+- 进阶
+	- day01：结构&箭头函数&剩余与展开
+	- day02：构造函数&ES6+函数
+	- day03：深入面向对象
+	- day04：异常、性能优化、深浅拷贝
+
+JavaScript权威网站：https://developer.mozilla.org/zh-CN/
+
+# 基础
+
+## day01
+
+目标：
+
+- 理解变量是存储数据的“容器”
+- 理解什么是数据并知道数据的分类
+- 知道JavaScript数据类型转换的特征
+
+### JavaScript简介和体验
+
+#### JavaScript是什么
+
+- JavaScript
+	- 是一种运行在客户端（浏览器）的编程语言，实现人机交互效果。
+
+- 作用：
+	- 网页特效（监听用户的一些行为让网页作出对应的反馈）
+	- 表单验证（针对表单数据的合法性进行判断）
+	- 数据交互（获取后台的数据，渲染到前端）
+	- 服务端编程（node.js）
+- JavaScript的组成
+	- **ECMAScript**（JavaScript语言基础）
+		- 规定了js基础语法的核心知识
+		- 如：变量、分支语句、循环语句、对象等等
+	- **Web APIs**（DOM & BOM）
+		- **DOM** ：操作文档，比如对页面元素进行移动、大小、添加删除等操作
+		- **BOM**：操作浏览器，比如页面弹窗，检测窗口宽度、存储数据到浏览器等等
+
+==小案例：体验JavaScript==
+
+点击切换按钮案例，体验HTML+CSS+JS实现交互效果
+
+被点击的按钮，更改背景色，其余按钮背景色统一
+
+<img src="./JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.assets/image-20240920002456561.png" style="width:30%;margin-left:0;border:1px solid red">
+
+~~~html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点击切换按钮</title>
+    <style>
+        .skyblue {
+            background-color: skyblue;
+        }
+    </style>
+</head>
+<body>
+    <button class="skyblue">按钮1</button>
+    <button>按钮2</button>
+    <button>按钮3</button>
+    <button>按钮4</button>
+
+    <script>
+        // 获取所有按钮
+        let bts = document.querySelectorAll('button')
+        // 循环遍历所有按钮
+        for(let i = 0; i < bts.length; i++){
+            // 给按钮添加点击事件
+            bts[i].addEventListener("click",function(){
+                // 取消之前选中按钮的背景色
+                document.querySelector(".skyblue").className = ""
+                //给当前点击的按钮添加背景色
+                this.className = "skyblue"
+            })
+        }
+    </script>
+</body>
+</html>
+~~~
+
+#### JavaScript书写位置
+
+- 目标：知道如何向页面添加JavaScript
+
+CSS：
+
+- 行内样式表、内部样式表、外部样式表
+
+JavaScript：
+
+- **行内JavaScript、内部JavaScript、外部JavaScript**
+
+**内部JavaScript**
+
+- 直接写在html文件里，用 script 标签包住
+- **规范**：script 标签写在&lt;/body&gt;上面
+- 拓展：alert(“你好，js”)，页面弹出警告框
+
+- 注意事项：
+	- 我们将&lt;script&gt;放在**HTML文件的底部**附近的原因是浏览器会按照代码在文件中的**顺序加载**HTML
+	- 如果先加载的JavaScript期望修改其下方的HTML，那么它可能由于尚未被加载而失效。
+	- 因此，将JavaScript代码放在HTML页面的底部附近通常是最好的策略
+
+~~~html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <!-- 内部js -->
+    <script>
+        // 页面弹出警示框
+        alert("你好，js~")
+    </script>
+</body>
+</html>
+~~~
+
+**外部JavaScript**
+
+- 代码写在以 .js 结尾的文件里
+- **语法**：通过script标签，引入到html页面中
+
+- 注意事项：
+	- **script标签中间无序写代码，否则会被忽略！**
+	- 外部JavaScript会使代码更加有序，更易于复用，且没有了脚本的混合，HTML也会更加易读，因此这是个好习惯。
+
+~~~html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 外部引入js -->
+    <script src="../js/003外部引入js.js">
+        //中间不要写内容
+    </script>
+</body>
+</html>
+~~~
+
+~~~javascript
+// 这里写js代码
+alert("我是外部引入的js")
+~~~
+
+**内联JavaScript**
+
+- 代码写在标签内部
+- **语法**：给标签添加属性的方式
+- 注意：
+	- 此处作为了解即可，但在后面 vue 框架会用这种模式
+
+~~~html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="alert('点我弹出的窗口')">点我，点我</button>
+</body>
+</html>
+~~~
+
+#### JavaScript的注释
+
+目标：了解JavaScript注释写法以及结束符通俗写法
+
+**注释**
+
+- 单行注释
+	- **符号**：//
+	- **作用**：// 右边这一行的代码会被忽略
+	- **快捷键**：==**ctrl + /**==
+- 块注释
+	- **符号**：/* */
+	- **作用**：在 /* 和 */ 之间的所有内容都会被忽略
+	- **快捷键**：==**shift + alt + a**==
+
+~~~javascript
+//1.JavaScript注释
+//1.1 单行注释 Ctrl + /
+
+/* 1.2 多行注释 shift + alt + a */
+~~~
+
+#### JavaScript的结束符
+
+- **作用**：使用英文的 ; 代表语句结束
+- **实际情况**：实际开发中，可写可不写，浏览器（JavaScript引擎）可以自动推断语句的结束位置
+- **现状**：在实际开发中，越来越多的人主张，书写JavaScript代码时省略结束符
+- **约定：为了统一风格，结束符要么每句都写，要么每句都不写（按照团队要求）**
+
+~~~javascript
+// JavaScript结束符
+// alert("第一句话");
+// alert("第二句话");
+alert("第一句话")
+alert("第二句话")
+~~~
+
+#### 输入和输出语法
+
+目标：能写出常见 JavaScript 输入输出语法
+
+**什么是语法**
+
+- 人和计算机打交道的规则约定
+- 我们要按照这个规则去写
+- 我们程序员需要操控计算机，需要计算机能看懂
+
+输出和输入也可理解为人和计算机的交互，用户通过键盘、鼠标等向计算机输入信息，计算机处理后再展示结果给用户，这便是一次输入和输出的过程。
+
+- 输出语法：
+	- 语法1：==document.write("要输出的内容")==
+		- **作用**：向body内输出内容
+		- **注意**：如果输出的内容写的是标签，也会被解析成网页元素
+	- 语法2：==alert("要输出的内容")==
+		- **作用**：页面弹出警告对话框
+	- 语法3：==console.log("控制台打印")==
+		- **作用**：控制台输出语法，程序员调试使用
+		- 在【检查】-【控制台】中查看输出信息
+
+~~~javascript
+// 1、文档输出内容
+document.write("我是div标签")
+document.write("<h1>我是标题</h1>")
+
+//2、弹窗
+alert("这是弹窗内容")
+
+//3、控制台打印输出 给 程序员看
+console.log("看看对不对")
+~~~
+
+- 输入语法：
+	- 语法：==prompt("请输入您的姓名：")==
+		- **作用**：显示一个对话框，对话框中包含一条文字信息，用来提示用户输入文字
+		- **展示**：<img src="./JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.assets/image-20240921012431203.png" style="width:30%;margin-left:0;border:1px solid red">
+
+~~~javascript
+// 输入语句
+prompt("请输入您的姓名：")
+~~~
+
+**JavaScript 代码执行顺序：**
+
+- 按HTML文档流顺序执行JavaScript代码
+- alert() 和 prompt() 它们会跳过页面渲染先被执行（目前作为了解，后期讲解详细执行过程）
+
+#### 字面量
+
+目标：能说出什么是字面量
+
+在计算机科学中，字面量（literal）是在计算机中描述 事/物
+
+比如：
+
+- 我们工资是：1000 此时1000就是 数字字面量
+- “黑马程序员”  字符串字面量
+- 还有接下来我们学的[ ] 数组字面量 { } 对象字面量 等等
+
+### 变量
+
+#### 变量是什么
+
+用户输入的数据我们如何存储起来？
+
+**变量**：
+
+- 白话：就是一个装东西的盒子
+
+- 通俗：变量是计算机中用来存储数据的“容器”，他可以让计算机变得有记忆
+
+- 注意：变量不是数据本身，它们仅仅是一个用来存储数值的容器，可以理解为一个个用来装东西的纸箱子
+
+#### 变量的基本使用☆
+
+目标：能够声明一个变量并完成赋值操作
+
+- 1、变量的声明
+- 2、变量的赋值
+
+目标：掌握变量的更新以及了解同时声明多个变量的写法
+
+==**变量的声明**==
+
+要想使用变量，首选需要创建变量（也称为声明变量或者定义变量）
+
+语法：==let 变量名==
+
+- 声明变量有两部分构成：声明关键字、变量名（标识）
+- let 即关键字（let：允许、让、要），所谓关键字是系统提供的专门用来声明（定义）变量的词语
+
+举例：`let age`
+
+- 我们声明了一个age变量
+- age即**变量的名称**，也叫标识符
+
+==**变量赋值**==
+
+定义了一个变量后，就能够初始化它（赋值）。在变量名之后跟上一个“=”，然后是数值
+
+注意：是通过**变量名**来获得变量里面的数据
+
+简单点，也可以声明变量的时候直接完成赋值操作，这种操作也称为变量的**初始化**
+
+~~~javascript
+// 1、声明一个年龄变量
+let age
+// 2、赋值
+age = 18
+// 3、变量的使用
+console.log(age)
+// 4、声明的同时直接赋值，称为变量的初始化
+let name = "张三"
+~~~
+
+==**变量更新**==
+
+变量赋值后，还可以通过简单地给它一个不同的值来更新它
+
+注意：let 不允许多次声明一个变量
+
+==**声明多个变量**==
+
+**语法**：多个变量中间用逗号隔开
+
+**说明**：看上去代码长度更短，但并**不推荐**这样，为了更好的可读性，请一行只声明一个变量
+
+~~~javascript
+// 1、声明多个变量
+let age = 18, username = "张三"
+console.log(age);
+console.log(username);
+~~~
+
+==接收用户输入的信息，在页面中显示出来==
+
+~~~javascript
+//1、接收用户输入的信息
+let username = prompt("请输入您的姓名：")
+// 2、在页面中显示输入的信息
+document.write(username)
+~~~
+
+==**交换变量的值**==
+
+需求：
+
+​	有2个变量：num1里面放的是10，num2里面放的是20
+
+​	最后变为num1里面放的是20，num1里面放的是10
+
+目的：
+
+​	1、练习变量的使用
+
+​	2、为了后面冒泡排序做准备
+
+~~~javascript
+// 1、定义两个变量
+let num1 = 10
+let num2 = 20
+// 2、声明临时变量
+let temp
+// 3、交换两个变量的值
+temp = num1
+num1 = num2
+num2 = temp
+// 4、查看两个变量
+console.log(num1, num2) 
+~~~
+
+#### 变量的本质
+
+目标：能够说出变量的本质是什么
+
+**内存**：计算机中存储数据的地方，相当于一个空间
+
+**变量的本质**：是程序在内存中申请的一块用来存放数据的小空间
+
+#### 变量的命名规则与规范
+
+目标：能写出符合规范的变量名
+
+**规则**：必须遵守，不遵守报错（法律层面）
+
+**规范**：建议，不遵守不会报错，但不符合业内通识（道德层面）
+
+==**规则**==
+
+- 不能用关键字
+	- 关键字：有特殊含义的字符，JavaScript 内置的一些英语词汇。例如：let、var、if、for等
+- 只能使用**下划线、字母、数字、$**组成，且**数字不能开头**
+- 字母**严格区分大小写**，如 Age 和 age 是不同的变量
+
+==**规范**==
+
+- 起名要有意义
+- 遵循小驼峰命名法
+	- 第一个单词首字母小写，后面每个单词首字母大写。如：userName
+
+**==变量练习==**
+
+需求：让用户输入自己的名字、年龄、性别，再输出到网页
+
+分析：
+
+1、弹出输入框（prompt）：请输入您的姓名（uname）：用变量保存起来
+
+2、弹出输入框（prompt）：请输入您的年龄（age）：用变量保存起来
+
+3、弹出输入框（prompt）：请输入您的性别（gender）：用变量保存起来
+
+4、页面分别输出（document.write）刚才的3个变量
+
+~~~javascript
+let uname = prompt("请输入您的姓名：")
+let age = prompt("请输入您的年龄：")
+let gender = prompt("请输入您的性别")
+document.write(uname, age, gender)
+~~~
+
+#### 变量拓展：let和var的区别
+
+==**let 和 var 区别**==
+
+在较旧的JavaScript，使用关键字var来声明变量，而不是let
+
+var现在开发中一般不在使用它，只是我们可能在老版本程序中看到它
+
+let为了解决var的一些问题
+
+var 声明：
+
+- 可以先使用再声明（不合理）
+- var声明过的变量可以重复声明（不合理）
+- 比如变量提升、全局变量、没有块级作用于等等
+
+**==结论==**
+
+var 就是个bug，别迷恋它了，以后声明变量，我们统一使用 let
+
+#### 变量拓展：数组
+
+- 数组（Array）：一种将**一组数据存储在单个变量名下**的优雅方式
+
+**==数组的基本使用==**
+
+目标：能够声明数组并且能够获取里面的数据
+
+- 声明语法：==**let 数组名 = [数据1, 数据2, …… , 数据n]**==，例如：let names = [“张三”, “李四”, “王五”]
+
+	- 数组是按顺序保存，所以每个数据都有自己的编号
+
+	- 计算机中的编号从0开始，依次类推
+
+	- 在数组中，数据的编号也叫**索引或下标**
+
+- 取值语法：==**数组名[下标]**==
+	- 通过下标来取数据
+	- 取出来是什么类型的，就根据这种类型特点来访问
+
+~~~javascript
+// 1、声明一个数组
+let arr = [10, 20, 30]
+let names = ["张三", "李四", "王五"]
+// 2、使用数组
+// 2.1 整个数组
+console.log(arr);
+// 2.2 数组中的单个元素：数组名[索引号]
+console.log(arr[0])
+~~~
+
+==案例：数组取值案例==
+
+需求：定义一个数组，里面存放星期一、星期二……直到星期日（共7天），在控制台输出：星期日
+
+~~~javascript
+let arr = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
+console.log(arr[6])
+~~~
+
+==**一些术语**==
+
+- **元素**：数组中保存的每个数据都叫做数组元素
+- **下标**：数组中数据的编号
+- **长度**：数组中数据的个数，通过数组的length属性获得
+
+### 常量
+
+#### 常量的基本使用
+
+- **概念**：使用 const 声明的变量称为”常量“
+- **使用场景**：当某个变量永远**不会改变**的时候，就可以使用 const 来声明，而不是 let
+- **命名规范**：和变量一致
+- **常量使用**：==const 常量名 = 常量值==
+- **注意**：**常量不允许重新赋值，声明的时候必须赋值（初始化）**
+- **小技巧**：**不需要重新赋值的数据使用 const**
+
+~~~javascript
+// 1、常量 不允许更改
+// 2、常量声明的时候必须赋值
+const PI = 3.14
+console.log(PI);
+~~~
+
+### 数据类型
+
+#### 数据类型☆
+
+目标：能输出JS中基本数据类型有哪些
+
+计算机世界中的万事万物都是数据
+
+计算机程序可以处理大量的数据，为什么要给数据分类？
+
+- 1、更加充分和高效的利用内存
+- 2、也更加方便程序员使用数据
+
+**JS数据类型整体分为两大类**：
+
+- 基本数据类型
+	- number 数字型
+	- string 字符串型
+	- boolean 布尔型
+	- undefined 未定义型
+	- null 空类型
+- 引用数据类型
+	- object 对象
+
+#### 数字类型（Number）
+
+即我们数学中学习到的数字，可以是整数、小数、正数、负数。
+
+JavaScript中的正数、负数、小数等，统一称为数字类型
+
+注意：
+
+- JS 是弱数据类型，变量到底属于哪种类型，只有赋值之后，我们才能确认
+- java是强数据类型，如：int a = 3 必须是整数
+
+~~~javascript
+// 1、js弱数据类型的语言，只有当我们赋值之后，才知道是什么数据类型
+let num = 10.11
+console.log(num)
+~~~
+
+#### 数字类型 - 算数运算运算
+
+数字可以有很多操作，比如，乘法、除法、加法、减法，等等，所以经常和算数运算符一起
+
+数学运算符也叫**算数运算符**，主要包括加、减、乘、除、取余（求模）
+
+- +：求和
+- -：求差
+- *：求积
+- /：求商
+- %：取模（取余数）
+	- 开发中经常作为某个数字是否被整除
+
+~~~javascript
+console.log(1 + 1) // 2
+console.log(1 - 1) // 0
+console.log(1 * 1) // 1
+console.log(1 / 1) // 1 
+console.log(4 % 2) // 0 
+console.log(5 % 3) // 2
+console.log(3 % 5) // 3
+~~~
+
+#### JavaScript算数运算符执行的优先级顺序
+
+同时使用多个运算符编写程序时，会按照某种顺序先后执行，我们称为优先级
+
+JavaScript中优先级越高越先被执行，优先级相同时以书写顺序从左到右执行
+
+- 乘、除、取余 优先级相同
+- 加、减 优先级相同
+- 乘、除、取余 优先级大于 加、减
+- 使用 ( ) 可以提升优先级
+- 总结：先乘除后加减，有括号先算括号里面的
+
+==案例：计算圆的面积==
+
+需求：对话框中输入圆的半径，算出圆的面积并显示到页面
+
+分析：
+
+​	1、面积公式：π*r^2^
+
+​	2、转换为JavaScript写法：变量 * r * r
+
+~~~javascript
+const PI = 3.14
+let r = prompt("请输入圆的半径")
+let area = PI * r * r
+document.write(area)
+~~~
+
+#### 数字类型-NaN
+
+NaN 代表一个计算错误。它是一个不正确的或者一个未定义的数学操作所得到的结果
+
+NaN 是粘性的。任何对 NaN的操作都会返回NaN
+
+~~~javascript
+// NaN not a number
+console.log("老师" - 2)  // NaN
+console.log(NaN + 2)  // NaN
+~~~
+
+#### 字符串类型（string）
+
+通过单引号（‘ ’）、双引号（” “）或反引号（ `）包裹的数据都叫字符串，单引号和双引号没有本质上的区别，推荐使用单引号。
+
+注意事项
+
+- 无论单引号或是双引号必须成对使用
+- 单引号 / 双引号可以互相嵌套，但是不可以自己嵌套自己（外双内单，或者外单内双）
+- 必要时可以使用转义符 \ ，输出单引号或双引号
+
+~~~javascript
+ // 字符串
+let str = "pink"
+let str1 = 'pink'
+let str2 = `pink`
+console.log(str, str1, str2)
+console.log(11)  // 数字
+console.log("11")  // 字符串
+let str3 = "" //空字符串
+let str4 = "我说：'你好'"
+~~~
+
+**==字符串拼接==**
+
+**场景**：+ 运算符，可以实现字符串的拼接
+
+口诀：数字相加，字符相连
+
+~~~javascript
+// 字符串拼接
+console.log(1 + 1) // 2
+console.log("pink" + "老师") // pink老师
+
+let age = 18
+document.write("我今年" + age + "岁了")
+~~~
+
+#### 模板字符串
+
+使用场景
+
+- 拼接字符串和变量
+- 在没有它之前，要拼接变量比较麻烦
+
+**语法**
+
+- ``（反引号）
+- 在英文输入模式下按键盘tab键上方那个键（1左边那个）
+- 内容拼接变量时，用==**${ }**==包住变量
+
+~~~javascript
+let age = 18
+document.write(`我今年${age}岁了`)
+~~~
+
+==案例：页面输出用户信息==
+
+需求：页面弹出对话框，输入名字和年龄，页面显示：大家好，我叫xxx，今年xx岁了
+
+~~~javascript
+let name = prompt("请输入姓名")
+let age = prompt("请输入年龄")
+document.write(`大家好，我叫${name}，今年${age}岁了`)
+~~~
+
+#### 布尔类型（boolean）
+
+表示肯定或者否定时在计算机中对应的是布尔类型数据
+
+他有两个固定的值 true  和 false ，表示肯定的数据用true（真），表示否定的数据用false（假）
+
+~~~javascript
+// true 和 false 是布尔型字面量
+let isCool = true
+document.write(isCool)  // true
+document.write(3 > 4)  // false
+~~~
+
+#### 未定义类型（undefined）
+
+未定义是比较特殊的类型，只有一个值 undefined
+
+**什么情况出现未定义类型？**
+
+- 只声明变量，不赋值的情况，变量的默认值为 undefined，一般很少【直接】为某个变量赋值为 undefined
+
+**工作中的使用场景**
+
+我们开发中经常声明一个变量，等待传送过来的数据
+
+如果我们不知道这个数据是否传递过来，此时我们可以通过检测这个变量是不是undefined，就判断用户是否有数据传递过来。
+
+~~~javascript
+// 未定义类型  弱数据类型  声明一个变量未赋值就是 undefined
+let num
+document.write(num)  // undefined
+~~~
+
+#### 空类型（null）
+
+JavaScript中的null仅仅是一个代表“无”、“空” 或 ”值未知“ 的特殊值
+
+**null 和 undefined 区别：**
+
+- undefined表示没有赋值
+- null表示复制了，但是内容为空
+
+**null开发中的使用场景**
+
+官方解释：把 null 作为尚未创建的对象
+
+大白话：将来有个变量里面存放的是一个对象，但是这个对象还没创建好，可以先给个 null
+
+~~~javascript
+// null 空类型
+let obj = null
+document.write(obj) // null
+document.write("<br>")
+// null 和 undefined 有区别
+// 计算有区别
+document.write(undefined + 1)  // NaN
+document.write(null + 1) // 1
+~~~
+
+#### 检测数据类型
+
+通过 typeof 关键字检测数据类型
+
+typeof 运算符可以返回被检测的数据类型。它支持两种语法形式
+
+- 作为运算符：==**typeof x**==（常用的写法）
+- 函数形式：typeof(x)
+
+换言之，有括号和没有括号，得到的结果是一样的，所以我们直接使用运算符的写法
+
+~~~javascript
+let num = 10
+console.log(typeof num) // number
+let str = "pink"
+console.log(typeof str)  // string
+let str1 = "10"
+console.log(typeof str1)  // string
+let flag = false
+console.log(typeof flag)  // boolean
+let un 
+console.log(typeof un) // undefined
+let obj = null
+console.log(typeof obj)  // object
+~~~
+
+### 类型转换
+
+#### 为什么要类型转换
+
+JavaScript是弱数据类型：JavaScript也不知道变量到底属于哪种数据类型，只有赋值了才清楚
+
+坑：使用表单、promot获取过来的数据默认是字符串类型的，此时就不能直接简单的进行加法运算
+
+此时需要转换变量的数据类型
+
+通俗来说：就是把一种数据类型的变量转换成我们需要的数据类型
+
+#### 隐式转换
+
+某些运算被执行时，系统内部自动将数据类型进行转换，这种转换称为隐式转换
+
+**规则**
+
+- +号两边只要有一个是字符串，都会把另外一个转换成字符串
+- 除了+以外的算数运算符，比如 - * / 等都会把数据转换成数字类型
+
+**缺点**
+
+- 转换类型不明确，靠经验才能总结
+
+**小技巧**
+
+- +号作为正号解析可以转换成数字型
+- 任何数据和字符串相加结果都是字符串
+
+~~~javascript
+console.log(1 + 1)  // 2
+console.log("pink" + 1) // pink1
+console.log(2 + 2)  // 4
+console.log(2 + "2")  // 22
+console.log(2 - 2)  // 0
+console.log(2 - "2") //0 , 字符串转换成数字型
+console.log(+12) // 12
+console.log(+"123") // 123,转换为数字型
+~~~
+
+#### 显示转换
+
+编写程序时过度依靠系统内部的隐式转换是不严谨的，因为隐式转换规律并不清晰，大多是靠经验总结的规律
+
+为了避免因隐式转换带来的问题，通常根据逻辑对数据进行显示转换
+
+**概念**
+
+自己写代码告诉系统该转换成什么类型
+
+**转换为数字型**
+
+- ==Number(数据)==
+	- 转成数字类型
+	- 如果字符串内容里面有非数字，转换失败时结果为NaN（Not a Number）即不是一个数字
+	- NaN 也是number类型的数据，代表非数字
+- ==parseInt(数据)==
+	- 只保留整数
+- ==parseFloat(数据)==
+	- 可以保留小数
+
+~~~javascript
+let str = "123"
+console.log(Number(str))  // 123
+console.log(Number("pink"))  // NaN
+// let num = Number(prompt("输入年薪"))
+let num = +prompt("输入年薪")
+console.log(num)
+
+console.log(parseInt("12px"))  // 12
+console.log(parseInt("12.34px"))  // 12
+console.log(parseInt("12.94px"))  // 12,不会四舍五入，只取整数部分
+
+console.log(parseFloat("12px"))  // 12
+console.log(parseFloat("12.34px"))  // 12.34
+console.log(parseFloat("12.94px"))  // 12.94
+~~~
+
+==案例：输入2个数，计算两个的和，打印到页面中==
+
+~~~javascript
+let num1 = +prompt("请输入第一个数")
+let num2 = +prompt("请输入第二个数")
+sum = num1 + num2
+alert(`计算结果是:${sum}`)
+~~~
+
+### 综合案例
+
+==用户订单信息案例==
+
+需求：用户输入商品价格和商品数量，以及收货地址，可以自动打印订单信息
+
+分析：
+
+​	1、需要输入3个数据，所以需要3个变量来存储 price num address
+
+​	2、需要计算总的价格 total
+
+​	3、页面打印生成表格，里面填充数据即可
+
+​	4、记得最好使用模板字符串
+
+<img src="./JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.assets/image-20240922154422968.png" style="width:60%;margin-left:0;border:1px solid red">
+
+~~~html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+        }
+        table {
+            margin: 0 auto;
+            height: 80px;
+            /* 合并相邻边框 */
+            border-collapse: collapse;
+            text-align: center;
+        }
+        th {
+            padding: 5px 30px;
+        }
+        table,
+        th,
+        td {
+            border: 1px solid #000;
+        }
+
+    </style>
+</head>
+<body>
+    <h2>订单确认</h2>
+    
+    <script>
+        // 1、用户输入
+        let price = +prompt("请输入商品的价格：")
+        let num = +prompt("请输入商品的数量：")
+        let address = prompt("请输入收货地址：")
+        // 2、计算总额
+        let total = price * num
+        // 3、页面打印渲染
+        document.write(`
+            <table>
+                <tr>
+                    <th>商品名称</th>
+                    <th>商品价格</th>
+                    <th>商品数量</th>
+                    <th>总价</th>
+                    <th>收货地址</th>
+                </tr>
+                <tr>
+                    <td>小米青春版PLUS</td>
+                    <td>${price}元</td>
+                    <td>${num}</td>
+                    <td>${total}元</td>
+                    <td>${address}</td>
+                </tr>
+            </table>
+        `)
+    </script>
+</body>
+</html>
+~~~
+
+## day02
+
+### 运算符
+
+#### 赋值运算符
+
+目标：能够使用赋值运算符简化代码
+
+- 赋值运算符：对变量进行赋值的运算符
+	- 已学过的赋值运算符：=	将等号右边的值赋值给左边，要求左边必须是一个容器
+	- 其他赋值运算符：
+		- +=	
+		- -=
+		- *=
+		- /=
+		- %=
+	- 使用这些运算符可以在对变量赋值时进行快速操作
+
+~~~javascript
+let num = 10
+// 赋值运算符
+num += 1
+document.write(num)  // 11
+~~~
+
+#### 一元运算符
+
+目标：能够使用一元运算符做自增运算
+
+众多的JavaScript的运算符，可以根据所需表达式的个数，分为一元运算符、二元运算符、三元运算符
+
+- 二元运算符：
+	- 例：let num = 10 + 20
+- 一元运算符：
+	- 例：正负号
+- 问题：我们以前让一个变量每次+1，以前我们是怎么做的？
+- 自增：
+	- 符号：++
+	- 作用：让变量的值 +1
+	- 前置自增：++变量名
+	- 后置自增：变量名++
+	- 前置自增和后置自增单独使用是没有区别的
+	- 参与运算的时候有区别
+		- 前置：
+		- 后置：
+- 自减：
+	- 符号：--
+	- 作用：让变量的值 -1
+- 使用场景：经常用于**计数**来使用。比如进行10次操作，用它来计算进行了多少次了
+
+~~~javascript
+let num = 10
+// num = num + 1
+// num += 1
+// 1、前置自增
+++num
+document.write(num) // 11
+// 2、后置自增
+let i = 1
+i++
+document.write(i) // 2
+//3、自增参与运算的区别
+let m = 1
+let n = 1
+console.log(++m + 1) // 3   先进行自增运算，再使用变量
+console.log(n++ + 1) // 2   先使用变量，再进行自增运算
+~~~
+
+#### 比较运算符
+
+目标：能使用常见的比较运算符进行比较运算
+
+学习路径：
+
+- 比较运算符的介绍
+	- 使用场景：比较两个数据大小、是否相等
+	- &gt;：左边是否大于右边
+	- &lt;：左边是否小于右边
+	- &gt;=：左边是否大于或等于右边
+	- &lt;=：左边是否小于或等于右边
+	- ==：**左右两边值是否相等**
+	- \=\=\=：**左右两边是否类型和值都相等	**==**开发中判断是否相等，强烈推荐使用 \=\=\=**==
+	- !=：左右两边是否不等
+	- !==：左右两边是否不全等
+	- 比较结果为boolean类型，即只会得到true 或 false
+- 比较运算符的使用
+- 比较运算符的细节
+	- 字符串比较，是比较的字符对应的ASCII码
+		- 从左往右依次比较
+		- 如果第一位一样再比较第二位，以此类推
+		- 比较的少，了解即可
+	- NaN 不等于任何值，包括它本身
+		- 涉及到”NaN“，都是False
+	- 尽量不要比较小数，因为小数有精度问题
+	- 不同类型之间比较会发生隐式转换
+		- 最终把数据隐式转换成number类型再比较
+		- 所以在开发中，如果进行准确的比较，我们更喜欢==== 或者 !\=\=
+
+~~~javascript
+console.log(3 > 5)  // false
+console.log(3 >= 3)  // true
+console.log(2 == 2) // true
+console.log(2 == '2')  // true， 有隐式转换，会把字符型"2"转换为数字型2
+console.log(2 === '2') // false，判断值和数据类型
+console.log(undefined == null)  // true
+console.log(undefined === null) // false
+console.log(NaN == NaN) // false,NaN不等于任何人，包括他自己
+
+console.log('a' < 'b')  // true
+console.log('aa' < 'ab')  // true
+~~~
+
+#### 逻辑运算符
+
+目标：掌握逻辑运算符，为程序”能思考“做准备
+
+**逻辑运算符的介绍**
+
+提问：如果我想判断一个变量 num 是否大于5且小于10，怎么办
+
+- 错误写法：5 < num < 10
+
+使用场景：逻辑运算符用来解决多重条件判断
+
+- 正确写法：num > 5 && num < 10
+
+**逻辑运算符的使用**
+
+| 符号 |  名称  | 日常读法 |              特点              | 口诀           |
+| :--: | :----: | :------: | :----------------------------: | -------------- |
+|  &&  | 逻辑与 |   并且   | 符号两边都为true，结果才为true | 一假则假       |
+| \|\| | 逻辑或 |   或者   | 符号两边有一个true，结果为true | 一真则真       |
+|  ！  | 逻辑非 |   取反   |    true变false，fasle变true    | 真变假，假变真 |
+
+~~~javascript
+// 逻辑与，一假则假
+console.log(true && true) // true
+console.log(true && false)  // false
+console.log(3 < 5 && 3 > 2) // true
+// 逻辑或，一真则真
+console.log(true || true)  // true
+console.log(true || false)  // true
+console.log(false || false)  // false
+// 逻辑非，取反
+console.log(!true) // false
+console.log(!false) // true
+~~~
+
+==练习：判断一个数是4的倍数，且不是100的倍数==
+
+需求：用户输入一个数，判断这个数能被4整除，但是不能被100整除，满足条件，页面弹出true，否则弹出false
+
+分析：
+
+​	1、用户输入
+
+​	2、判断条件，看余数是不是0，如果是0就是能被整除，余数不是0，则不能被整除
+
+~~~javascript
+let num = +prompt("请输入一个数：")
+alert(num % 4 === 0 && num % 100 !== 0)
+~~~
+
+#### 运算符优先级
+
+目标：掌握运算符优先级，能判断运算符执行的顺序
+
+| 优先级 |   运算符   |           顺序           |
+| :----: | :--------: | :----------------------: |
+|   1    |   小括号   |           ( )            |
+|   2    | 一元运算符 |         ++  -- !         |
+|   3    | 算数运算符 |     先 * / % 后 + -      |
+|   4    | 关系运算符 |    >    >=   <    <=     |
+|   5    | 相等运算符 | ==    !=    ===    !\=\= |
+|   6    | 逻辑运算符 |      先 && 后 \|\|       |
+|   7    | 赋值运算符 |            =             |
+|   8    | 逗号运算符 |            ,             |
+
+- 一元运算符里面的**逻辑非优先级很高**
+- **逻辑与比逻辑或优先级高**
+
+~~~javascript
+let a = 3 > 5 && 2 < 7 && 3 == 4
+console.log(a)  // false
+
+let b = 3 <= 4 || 3 > 1 || 3 != 2
+console.log(b)  // true
+
+let c = 2 === '2'
+console.log(c)  // false
+
+let d = !c || b && a
+console.log(d)  // true
+~~~
+
+### 语句
+
+#### 表达式和语句
+
+目标：能说出表达式和语句的区别
+
+- 表达式：
+	- 表达式是可以被求值的代码，JavaScript引擎会将其计算出一个结果
+- 语句：
+	- 语句是一段可以执行的代码
+	- 比如：prompt( ) 可以弹出一个输入框，还有 if 语句 for 语句等等
+
+**表达式和语句的区别**
+
+- 表达式：因为表达式可被求值，所以它可以卸载赋值语句的右侧
+	- 表达式： num = 3 + 4
+- 语句：而语句不一定有值，所以比如alert( ) for 和 break等语句不能被赋值
+	- 语句：alert( ) 弹出对话框	console.log( ) 控制台打印输出
+- 某些情况下，也可以把表达式理解为表达式语句，因为它是计算结果，但不是必须的成分（例如continue语句）
+
+#### 分支语句
+
+目标：掌握流程控制，写出能”思考“的程序
+
+**程序三大流程控制语句**
+
+- 以前我们写的代码，写几句就从上往下执行几句，这种叫顺序结构
+- 有的时候要根据条件选择执行代码，这种叫分支结构
+- 某段代码被重复执行，就叫循环结构
+
+**分支语句**
+
+- 分支语句可以让我们有**选择性**的执行想要的代码
+- 分支语句包含：
+	- if分支语句
+	- 三元运算符
+	- switch语句
+- if语句有三种使用：单分支、双分支、多分支
+
+#### if 单分支语句
+
+- 单分支使用语法：==if (条件) { 满足条件执行的代码 }==
+	- 括号内的条件为true时，进入大括号里面执行代码
+	- 小括号内的结果若不是布尔类型时，会发生隐式转换为布尔类型
+	- 如果大括号只有一个语句，大括号可以省略，但是，不提倡
+
+~~~javascript
+// 单分支语句
+if (true) {
+    console.log("执行语句")
+}
+if (3 > 5) {
+    console.log("执行语句")
+}
+if (2 === '2') {
+    console.log("执行语句")
+}
+// 除了0所有的数字都为真
+if (2) {
+    console.log("是否执行？")
+}
+//除了 ''（空字符串） 所有字符串都为真
+if ("pink老师") {
+    console.log("执行")
+}
+~~~
+
+==练习：if语句==
+
+用户输入高考成绩，如果分数大于700，则提示恭喜考入黑马程序员
+
+分析
+
+​	1、用户输入
+
+​	2、进行判断输出
+
+~~~javascript
+let score = +prompt("请输入您的成绩：")
+if (score > 700) {
+    alert("恭喜考入黑马程序员")
+}
+~~~
+
+#### if 双分支语句
+
+- 双分支语法：==if……else==
+
+==练习：判断用户登录案例==
+
+需求：用户输入，用户名：pink，密码：123456，则提示登录成功，否则提示登录失败
+
+分析：
+
+​	1、弹出输入框，分别输入用户名和密码
+
+​	2、通过 if 语句判断，如果用户名是 pink，并且密码是 123456，则执行 if 里面的语句，否则执行 else 里面的语句
+
+~~~javascript
+let name = prompt("请输入用户名")
+let password = prompt("请输入密码")
+if (name === 'pink' && password === '123456') {
+    alert("恭喜登录成功")
+} else {
+    alert("用户名或者密码错误")
+}
+~~~
+
+==案例：判断闰年案例==
+
+需求：让用户输入年份，判断这一年是闰年还是平年，并弹出对应的警示框
+
+分析：
+
+​	1、能被4整除但不能被100整除，或者被400整除的年份是闰年，否则都是平年
+
+​	2、需要逻辑运算符
+
+~~~javascript
+let year = +prompt("请输入一个年份：")
+if (year % 4 === 0 && year % 100 !== 0 || year % 400 === 0) {
+    alert(`${year}年是闰年`)
+} else {
+    alert(`${year}年是平年`)
+}
+~~~
+
+#### if 多分支语句
+
+- 语法：==if……else if……else==
+- 使用场景：适合有多个结果的时候，比如学习成绩可以分为： 优 良 可 差
+
+==练习：输入成绩案例==
+
+需求：根据输入不同的成绩，反馈不同的评价
+
+注：
+
+1、成绩90以上是 优秀
+
+2、成绩70-90是 良好
+
+3、成绩60-70之间是 及格
+
+4、成绩60以下是 不及格
+
+~~~javascript
+let score = +prompt("请输入您的成绩：")
+if (score >= 90) {
+    alert("优秀")
+} else if (score >= 70) {
+    alert("良好")
+} else if (score >= 60) {
+    alert("及格")
+} else {
+    alert("不及格")
+}
+~~~
+
+#### 三元运算符
+
+目标：能够利用三元运算符执行满足条件的语句
+
+使用场景：其实是比 if 双分支更简单的写法，可以使用 三元表达式
+
+符号：? 与：配合使用
+
+语法：==条件 ? 满足条件执行的代码 : 不满足条件执行的代码==
+
+一般用来取值
+
+~~~javascript
+// 三元运算符
+// 条件 ? 代码1 : 代码2
+console.log(3 > 5 ? 3 : 5) //5
+
+let sum = 3 < 5 ? 3 : 5
+console.log(sum)  // 3
+~~~
+
+==练习：判断2个数的最大值==
+
+需求：用户输入2个数，控制台输出最大的值
+
+分析：
+
+​	1、用户输入2个数
+
+​	2、利用三元运算符输出最大值
+
+~~~javascript
+let num1 = +prompt("请输入第一个数")
+let num2 = +prompt("请输入第二个数")
+let max = num1 > num2 ? num1 : num2
+console.log(max)
+~~~
+
+==案例：数字补0案例==
+
+需求：用户输入1个数，如果数字小于0，则前面补0，比如 09   03 等
+
+分析：
+
+1、为后期页面显示时间做铺垫
+
+2、利用三元运算符 补0计算
+
+~~~javascript
+let num = +prompt("请输入一个数：")
+num = num < 10 ? '0' + num : num
+alert(num)
+~~~
+
+#### switch 分支语句
+
+目标：能利用 switch 执行满足条件的语句
+
+语法：==switch……case……default==
+
+注意：
+
+- 1、switch 一般用于等值判断，不适合区间判断
+- 2、switch 一般需要==**配合break 关键字使用**==，没有break 会造成case 穿透
+
+~~~javascript
+switch (1) {
+    case 1:
+        console.log("选择的是1")
+        break  // 退出switch
+    case 2:
+        console.log("选择的是2")
+        break
+    case 3:
+        console.log("选择的是3")
+        break
+    default:
+        console.log("没有符合条件的")
+}
+~~~
+
+==案例：简单计算器==
+
+需求：用户输入2个数字，然后输入 + - * / 任何一个，可以计算结果
+
+分析：
+
+​	1、用户输入数字
+
+​	2、用户输入不同算数运算符，可以去执行不同的运算（switch）
+
+~~~javascript
+let num1 = +prompt("请输入第一个数")
+let num2 = +prompt("请输入第二个数")
+let sp = prompt("请输入计算方式（+ - * /）")
+switch (sp) {
+    case "+":
+        alert(`两个数的加法操作是${num1 + num2}`)
+        break;
+    case "-":
+        alert(`两个数的减法操作是${num1 - num2}`)
+        break;
+    case "*":
+        alert(`两个数的乘法操作是${num1 * num2}`)
+        break;
+    case "/":
+        alert(`两个数的除法操作是${num1 / num2}`)
+        break;
+
+    default:
+        alert("输入的计算方式有误")
+        break;
+}
+~~~
+
+#### 循环语句
+
+目标：掌握循环结构，实现一段代码重复执行
+
+**循环**：重复执行一些操作
+
+- while：在……期间，所以while循环 就是在满足条件期间，重复执行某些代码
+
+路径：
+
+- while 循环基本语法
+- while 循环的三要素
+
+#### while 循环
+
+**while循环的基本语法**
+
+~~~javascript
+while (循环条件) {
+	要重复执行的代码（循环体）
+}
+~~~
+
+所以，==**while循环要具备三要素**==
+
+- 1、变量起始值
+- 2、终止条件（没有终止条件，循环会一直执行，造成死循环）
+- 3、变量变化量（一般用自增或者自减）
+
+~~~javascript
+let i = 1
+while (i <= 3) {
+    document.write("我会执行3次<br>")
+    i++
+}
+~~~
+
+==案例：在页面中打印输出10句“月薪过万”==
+
+需求：使用while循环，页面中打印，可以添加换行效果
+
+~~~javascript
+let i = 0
+while (i < 10) {
+    document.write("月薪过万<br>")
+    i++
+}
+~~~
+
+==练习：页面输出1-100==
+
+~~~javascript
+//页面输出1-100
+let i = 0
+while (i <= 100) {
+    document.write(i + '<br>')
+    i++
+}
+~~~
+
+==练习：计算从1加到100的总和并输出==
+
+~~~javascript
+// 1-100所有数字之和
+let j = 1
+let sum = 0
+while (j <= 100) {
+    sum += j
+    j++
+}
+document.write(`1-100的总和是：${sum}<br>`)
+~~~
+
+==练习：计算1-100之间的所有偶数和==
+
+~~~javascript
+//1-100所有偶数和
+let k = 1
+result = 0
+while (k <= 100) {
+    if (k % 2 === 0) {
+        result += k
+    }
+    k++
+}
+document.write(`1-100中的偶数和是：${result}`)
+~~~
+
+#### 循环退出
+
+目标：能说出continue 和 break 的区别
+
+循环结束：
+
+- break：退出循环
+- continue：结束本次循环，继续下次循环
+
+区别：
+
+- continue退出本次循环，一般用于排除或者跳过某一个选项的时候，可以使用continue
+- break 退出整个循环，一般用于结果已经得到，后续的循环不需要的时候可以使用
+
+break退出
+
+~~~javascript
+let i = 1
+while (i <= 5) {
+    if (i == 3){
+        // 退出整个循环
+        break
+    }
+    document.write(`我要吃第${i}个包子<br>`)
+    i++
+}
+~~~
+
+continue退出
+
+~~~javascript
+let i = 1
+while (i <= 5) {
+    if (i == 3){
+        i++
+        // 退出本次循环，continue之前要有循环增量
+        continue
+    }
+    document.write(`我要吃第${i}个包子<br>`)
+    i++
+}
+~~~
+
+==案例：页面弹框==
+
+需求：页面弹出对话框，“你爱我吗”，如果输入“爱”，则结束，否则一直弹出对话框
+
+分析：
+
+​	1、循环条件永远为真，一直弹出对话框
+
+​	2、循环的时候，重新让用户输入
+
+​	3、如果用户输入的是：爱，则退出循环（break）
+
+~~~javascript
+while (true) {
+    let str = prompt("你爱我吗")
+    if (str === "爱") {
+        break
+    }
+}
+~~~
+
+### 断点调试
+
+作用：学习时可以帮助更好的理解代码运行，工作时可以更快找到bug
+
+- 浏览器打开调试界面
+	- 1、按 F12 打开开发者工具
+	- 2、点到 sources 一栏（来源）
+	- 3、选择代码文件
+- 断点：在某句代码上加的标记就叫做断点，当程序执行到这句有标记的代码时就会停下来
+
+<img src="./JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.assets/image-20240923051526000.png" style="width:90%;margin-left:0;border:1px solid red">
+
+### 综合案例
+
+==案例：简易ATM取款机案例==
+
+需求：用户可以选择存钱、取钱、查看余额和退出功能
+
+分析：
+
+​	1、循环的时候，需要反复提示输入框，所以提示框写到循环里面
+
+​	2、退出的条件是用户输入了4，如果是4，则结束循环，不在弹窗
+
+​	3、提前准备一个金额预先存储一个数额
+
+​	4、取钱则是减法操作，存钱则是加法操作，查看余额则是直接显示余额
+
+​	5、输入不同的值，可以使用switch来执行不同的操作
+
+~~~javascript
+// 3、准备一个总金额
+let money = 100
+// 1、开始循环
+while (true) {
+    let op = +prompt(`
+    请您选择操作：
+    1.存钱
+    2.取钱
+    3.查看余额
+    4.退出
+    `)
+    // 2、如果用户输入的是4，则退出循环，break
+    if (op === 4) {
+        break
+    }
+    switch(op) {
+        case 1:
+            let cun = +prompt("请输入存款金额")
+            money += cun
+            break
+        case 2:
+            let qu = +prompt("请输入取款金额")
+            money -= qu
+            break
+        case 3:
+            alert(`您的银行卡余额是${money}`)
+            break
+    }
+}
+~~~
+
